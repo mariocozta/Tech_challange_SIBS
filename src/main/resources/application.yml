@@ -1,0 +1,29 @@
+server:
+  servlet:
+    context-path: /api/
+  port: 5000
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test_db  # Replace 'localhost', '5432', and 'my_geospatial_db' with your PostgreSQL server details and database name
+    username: postgres
+    password: miaumiau
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        #dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect  # Set the PostGIS dialect for Hibernate org.hibernate.spatial.dialect.postgis.PostgisDialect
+        #dialect: org.hibernate.dialect.PostgreSQL95Dialect # Set the PostGIS dialect for Hibernate org.hibernate.spatial.dialect.postgis.PostgisDialect
+        #dialect: org.hibernate.dialect.H2Dialect
+        jdbc.lob.non_contextual_creation: true  # Set this to true if you encounter issues with large objects (LOBs)
+
+    hibernate:
+      ddl-auto: update  # Set the DDL auto behavior based on your requirements (e.g., create, update, none)
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type: TRACE
+        # Optionally, you can set other Spring and Hibernate properties here if needed
