@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="createTableStockMovement" author="mario">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="stock_movement"/>
+            </not>
+        </preConditions>
+        <createTable tableName="stock_movement">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="creation_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="original_quantity" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="current_quantity" type="INT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="addForeignKeyToStockMovement" author="mario">
+        <addForeignKeyConstraint baseTableName="stock_movement"
+                                 baseColumnNames="item_id"
+                                 constraintName="fk_stock_movement"
+                                 referencedTableName="item"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>
