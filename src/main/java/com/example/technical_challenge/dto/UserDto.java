@@ -43,8 +43,8 @@ public class UserDto {
                 .build();
     }
 
-    public static List<UserDto> fromEntityList(List<User> spots) {
-        return spots.stream()
+    public static List<UserDto> fromEntityList(List<User> users) {
+        return users.stream()
                 .map(UserDto::fromEntity)
                 .collect(Collectors.toList());
     }
