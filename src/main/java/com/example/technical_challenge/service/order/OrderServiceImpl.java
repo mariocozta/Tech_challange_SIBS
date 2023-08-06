@@ -7,7 +7,9 @@ import com.example.technical_challenge.db.repository.OrderRepository;
 import com.example.technical_challenge.db.repository.StockMovementRepository;
 import com.example.technical_challenge.dto.ItemDto;
 import com.example.technical_challenge.dto.OrderDto;
+import com.example.technical_challenge.service.email.IEmailService;
 import com.example.technical_challenge.service.stockMovement.IStockMovementService;
+import liquibase.pro.packaged.A;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class OrderServiceImpl implements IOrderService {
 
     @Autowired
     private final IStockMovementService stockMovementService;
+
+    @Autowired
+    private final IEmailService emailService;
 
     @Override
     public OrderDto getOrder(Integer orderId) {
@@ -65,6 +70,9 @@ public class OrderServiceImpl implements IOrderService {
         newOrder =  orderRepository.save(newOrder);
         if(stockMovementsNeededToFulfilOrder.size() > 0) {
             stockMovementRepository.saveAll(stockMovementsNeededToFulfilOrder);
+        }
+        if(newOrder.getIsFulfilled()){
+            emailService.sendEmail(newOrder.getUserWhoCreatedOrder().getEmail(),String.format("Order %2d fulfilled",newOrder.getId()),String.format("Your order with id %2d was fulfilled", newOrder.getId()));
         }
         return OrderDto.fromEntity(newOrder);
     }

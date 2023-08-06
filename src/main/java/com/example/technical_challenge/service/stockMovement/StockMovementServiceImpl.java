@@ -6,6 +6,7 @@ import com.example.technical_challenge.db.model.StockMovement;
 import com.example.technical_challenge.db.repository.OrderRepository;
 import com.example.technical_challenge.db.repository.StockMovementRepository;
 import com.example.technical_challenge.dto.StockMovementDto;
+import com.example.technical_challenge.service.email.IEmailService;
 import com.example.technical_challenge.service.order.IOrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class StockMovementServiceImpl implements IStockMovementService {
 
     @Autowired
     private final OrderRepository orderRepository;
+
+    @Autowired
+    private final IEmailService emailService;
 
     @Override
     public StockMovementDto getStockMovement(Integer stockMovementId) {
@@ -86,6 +90,7 @@ public class StockMovementServiceImpl implements IStockMovementService {
                     unfulfilledOrder.setIsFulfilled(true);
                     orderRepository.save(unfulfilledOrder);
                     stockMovementRepository.saveAll(stockMovements);
+                    emailService.sendEmail(unfulfilledOrder.getUserWhoCreatedOrder().getEmail(),String.format("Order %2d fulfilled",unfulfilledOrder.getId()),String.format("Your order with id %2d was fulfilled", unfulfilledOrder.getId()));
                 }
             }else{
                 break;
