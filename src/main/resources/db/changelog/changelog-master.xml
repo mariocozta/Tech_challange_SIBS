@@ -7,4 +7,6 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <include file="/db/changelog/changes/02-create-table-item.xml"/>
     <include file="/db/changelog/changes/03-create-table-stock-movement.xml"/>
     <include file="/db/changelog/changes/04-create-table-orders.xml"/>
+    <include file="/db/changelog/changes/05-insert-user.xml"/>
+    <include file="/db/changelog/changes/06-insert-item.xml"/>
 </databaseChangeLog>

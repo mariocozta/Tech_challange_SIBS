@@ -5,6 +5,7 @@ import com.example.technical_challenge.dto.ItemDto;
 import com.example.technical_challenge.dto.UserDto;
 import com.example.technical_challenge.service.item.IItemServiceImpl;
 import com.example.technical_challenge.service.user.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequestMapping("/item")
 public class ItemController {
 
+    @Autowired
     private IItemServiceImpl itemService;
 
     @GetMapping("/getItem")
@@ -22,15 +24,15 @@ public class ItemController {
     }
 
     @PostMapping("/createItem")
-    public ItemDto createUser(@RequestBody ItemDto userDto)
+    public ItemDto createUser(@RequestBody ItemDto itemDto)
     {
-        return itemService.createItem(userDto);
+        return itemService.createItem(itemDto);
     }
 
     @PutMapping("/updateItem")
-    public ItemDto updateUser(@RequestBody ItemDto userDto)
+    public ItemDto updateUser(@RequestBody ItemDto itemDto)
     {
-        return itemService.updateItem(userDto);
+        return itemService.updateItem(itemDto);
     }
 
     @DeleteMapping("/deleteItem")

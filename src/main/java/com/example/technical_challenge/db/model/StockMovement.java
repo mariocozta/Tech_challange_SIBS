@@ -22,13 +22,14 @@ public class StockMovement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private int originalQuantity;
+    private Integer originalQuantity;
 
-    private int currentQuantity;
+    private Integer currentQuantity;
 }

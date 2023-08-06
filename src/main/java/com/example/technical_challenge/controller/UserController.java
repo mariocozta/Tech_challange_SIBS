@@ -4,6 +4,7 @@ package com.example.technical_challenge.controller;
 import com.example.technical_challenge.db.model.User;
 import com.example.technical_challenge.dto.UserDto;
 import com.example.technical_challenge.service.user.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    @Autowired
     private UserServiceImpl userService;
 
     @GetMapping("/getUser")

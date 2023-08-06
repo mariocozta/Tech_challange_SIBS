@@ -38,8 +38,8 @@ public class ItemDto {
                 .build();
     }
 
-    public static List<ItemDto> fromEntityList(List<Item> spots) {
-        return spots.stream()
+    public static List<ItemDto> fromEntityList(List<Item> items) {
+        return items.stream()
                 .map(ItemDto::fromEntity)
                 .collect(Collectors.toList());
     }
