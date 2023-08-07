@@ -8,7 +8,10 @@ import com.example.technical_challenge.db.repository.StockMovementRepository;
 import com.example.technical_challenge.dto.StockMovementDto;
 import com.example.technical_challenge.service.email.IEmailService;
 import com.example.technical_challenge.service.order.IOrderService;
+import com.example.technical_challenge.service.order.OrderServiceImpl;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +33,8 @@ public class StockMovementServiceImpl implements IStockMovementService {
 
     @Autowired
     private final IEmailService emailService;
+
+    private static final Logger logger = LogManager.getLogger(OrderServiceImpl.class);
 
     @Override
     public StockMovementDto getStockMovement(Integer stockMovementId) {
@@ -90,7 +96,9 @@ public class StockMovementServiceImpl implements IStockMovementService {
                     unfulfilledOrder.setIsFulfilled(true);
                     orderRepository.save(unfulfilledOrder);
                     stockMovementRepository.saveAll(stockMovements);
+                    traceStockMovements(unfulfilledOrder.getId(),stockMovements);
                     emailService.sendEmail(unfulfilledOrder.getUserWhoCreatedOrder().getEmail(),String.format("Order %2d fulfilled",unfulfilledOrder.getId()),String.format("Your order with id %2d was fulfilled", unfulfilledOrder.getId()));
+                    logger.info("Email of order fulfilled sent to email {}",unfulfilledOrder.getUserWhoCreatedOrder().getEmail());
                 }
             }else{
                 break;
@@ -124,5 +132,9 @@ public class StockMovementServiceImpl implements IStockMovementService {
     public Integer getCurrentStockOfItem(Item item){
         List<StockMovement> stockMovementsWithPositiveStock = stockMovementRepository.findByItemWhereCurrentQuantityBiggerThanZero(item.getId());
         return stockMovementsWithPositiveStock.stream().mapToInt(StockMovement::getCurrentQuantity).sum();
+    }
+    private void traceStockMovements(Integer orderId,List<StockMovement> stockMovements){
+        String idsOfStockMovements =  stockMovements.stream().map(StockMovement::getId).map(String::valueOf).collect(Collectors.joining(", "));
+        logger.info("Order {} was fulfilled using the following stock movements: {}",orderId, idsOfStockMovements);
     }
 }

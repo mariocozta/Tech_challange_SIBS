@@ -16,7 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class EmailServiceImpl implements IEmailService {
 
-    private final JavaMailSender javaMailSender;
+    //private final JavaMailSender javaMailSender;
 
     @Override
     public void sendEmail(String to, String subject, String text) {
@@ -25,6 +25,6 @@ public class EmailServiceImpl implements IEmailService {
         message.setTo("mariocozta@gmail.com");
         message.setSubject("subject");
         message.setText("text");
-        javaMailSender.send(message);
+        //javaMailSender.send(message);
     }
 }
