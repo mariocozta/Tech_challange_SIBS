@@ -1,5 +1,6 @@
 package com.example.technical_challenge.service.order;
 
+import com.example.technical_challenge.constant.ResponseCode;
 import com.example.technical_challenge.db.model.Item;
 import com.example.technical_challenge.db.model.Order;
 import com.example.technical_challenge.db.model.StockMovement;
@@ -7,6 +8,7 @@ import com.example.technical_challenge.db.repository.OrderRepository;
 import com.example.technical_challenge.db.repository.StockMovementRepository;
 import com.example.technical_challenge.dto.ItemDto;
 import com.example.technical_challenge.dto.OrderDto;
+import com.example.technical_challenge.exception.SIBSRuntimeException;
 import com.example.technical_challenge.service.email.IEmailService;
 import com.example.technical_challenge.service.stockMovement.IStockMovementService;
 import lombok.AllArgsConstructor;
@@ -49,8 +51,8 @@ public class OrderServiceImpl implements IOrderService {
         if (optionalOrder.isPresent()){
             return OrderDto.fromEntity(optionalOrder.get());
         }
-        //TROW ERROR
-        return null;
+        logger.error("Could not find order with id: {}",orderId);
+        throw new SIBSRuntimeException(ResponseCode.PROVIDED_ID_INCORRECT);
     }
 
     @Override
@@ -99,7 +101,8 @@ public class OrderServiceImpl implements IOrderService {
 
         orderRepository.deleteById(orderId);
         if(orderRepository.existsById(orderId)){
-            //TROW ERROR
+            logger.error("Could not delete order with id: {}",orderId);
+            throw new SIBSRuntimeException(ResponseCode.DELETION_FAILED);
         }
     }
 

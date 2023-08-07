@@ -1,12 +1,17 @@
 package com.example.technical_challenge.service.item;
 
+import com.example.technical_challenge.constant.ResponseCode;
 import com.example.technical_challenge.db.model.Item;
 import com.example.technical_challenge.db.model.User;
 import com.example.technical_challenge.db.repository.ItemRepository;
 import com.example.technical_challenge.db.repository.UserRepository;
 import com.example.technical_challenge.dto.ItemDto;
 import com.example.technical_challenge.dto.UserDto;
+import com.example.technical_challenge.exception.SIBSRuntimeException;
+import com.example.technical_challenge.service.order.OrderServiceImpl;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +25,17 @@ public class IItemServiceImpl implements IItemService {
     @Autowired
     private final ItemRepository itemRepository;
 
-    @Override
-    public ItemDto getItem(Integer userId) {
+    private static final Logger logger = LogManager.getLogger(IItemServiceImpl.class);
 
-        Optional<Item> optionalItem = itemRepository.findById(userId);
+    @Override
+    public ItemDto getItem(Integer itemId) {
+
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isPresent()){
             return ItemDto.fromEntity(optionalItem.get());
         }
-        //TROW ERROR
-        return null;
+        logger.error("Could not find item with id: {}",itemId);
+        throw new SIBSRuntimeException(ResponseCode.PROVIDED_ID_INCORRECT);
     }
 
     @Override
@@ -48,11 +55,12 @@ public class IItemServiceImpl implements IItemService {
     }
 
     @Override
-    public void deleteItem(Integer userId) {
+    public void deleteItem(Integer itemId) {
 
-        itemRepository.deleteById(userId);
-        if(itemRepository.existsById(userId)){
-            //TROW ERROR
+        itemRepository.deleteById(itemId);
+        if(itemRepository.existsById(itemId)){
+            logger.error("Could not delete item with id: {}",itemId);
+            throw new SIBSRuntimeException(ResponseCode.DELETION_FAILED);
         }
     }
 

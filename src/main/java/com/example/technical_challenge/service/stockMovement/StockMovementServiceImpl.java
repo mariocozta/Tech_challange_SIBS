@@ -1,11 +1,13 @@
 package com.example.technical_challenge.service.stockMovement;
 
+import com.example.technical_challenge.constant.ResponseCode;
 import com.example.technical_challenge.db.model.Item;
 import com.example.technical_challenge.db.model.Order;
 import com.example.technical_challenge.db.model.StockMovement;
 import com.example.technical_challenge.db.repository.OrderRepository;
 import com.example.technical_challenge.db.repository.StockMovementRepository;
 import com.example.technical_challenge.dto.StockMovementDto;
+import com.example.technical_challenge.exception.SIBSRuntimeException;
 import com.example.technical_challenge.service.email.IEmailService;
 import com.example.technical_challenge.service.order.IOrderService;
 import com.example.technical_challenge.service.order.OrderServiceImpl;
@@ -34,7 +36,7 @@ public class StockMovementServiceImpl implements IStockMovementService {
     @Autowired
     private final IEmailService emailService;
 
-    private static final Logger logger = LogManager.getLogger(OrderServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(StockMovementServiceImpl.class);
 
     @Override
     public StockMovementDto getStockMovement(Integer stockMovementId) {
@@ -43,8 +45,8 @@ public class StockMovementServiceImpl implements IStockMovementService {
         if (optionalStockMovement.isPresent()){
             return StockMovementDto.fromEntity(optionalStockMovement.get());
         }
-        //TROW ERROR
-        return null;
+        logger.error("Could not find stock movement with id: {}",stockMovementId);
+        throw new SIBSRuntimeException(ResponseCode.PROVIDED_ID_INCORRECT);
     }
 
     @Override
@@ -118,7 +120,8 @@ public class StockMovementServiceImpl implements IStockMovementService {
 
         stockMovementRepository.deleteById(stockMovementId);
         if(stockMovementRepository.existsById(stockMovementId)){
-            //TROW ERROR
+            logger.error("Could not delete stock movement with id: {}",stockMovementId);
+            throw new SIBSRuntimeException(ResponseCode.DELETION_FAILED);
         }
     }
 
